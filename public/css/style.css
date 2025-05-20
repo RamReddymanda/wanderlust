@@ -6,10 +6,11 @@ body {
 }
 .container{
     flex: 1;
+    /* max-height: 60vh; */
 }
-.navbar{
+/* .navbar{
     height: 5rem;
-}
+} */
 .fa-compass{
     color: #fe424d;
     font-size: 2rem;
@@ -92,6 +93,17 @@ body {
     position: relative;
     top: 0;
     bottom: 0;
-    height: 400px;
+    /* height: 400px; */
     width: 80vh;
+}
+@media (min-width: 768px) {
+    .navbar{
+        height: 5rem;
+    }
+    .show-img{
+        height: 50vh;
+    }
+    #map{
+        width: 100%;
+    }
 }

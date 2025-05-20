@@ -18,6 +18,9 @@ router
       validateListing,
       wrapAsync(listingController.createlisting)
     );
+    // ...existing code...
+router.get('/search', wrapAsync(listingController.searchByLocation));
+// ...existing code...
 //new route
 router.get('/new',isLoggedIn,(req,res)=>{
     console.log(req.user);
@@ -37,5 +40,6 @@ router
 
 //Edit Route
 router.get('/:id/edit',isLoggedIn,isOwner,wrapAsync(listingController.rendorEditListing));
+
 
 module.exports=router;

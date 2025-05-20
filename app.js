@@ -19,7 +19,8 @@ const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
-
+const wrapAsync = require('./utils/wrapAsync');
+const listingController=require('./controllers/listings');
 app.use(methodOverride('_method'));
 app.engine('ejs',ejsMate);
 app.set('view engine','ejs');
@@ -90,9 +91,7 @@ app.use('/listings/:id/reviews',reviewRouter);
 app.use('/listings',listingRouter);
 
 app.use('/',userRouter);
-app.get('/',(req,res)=>{
-    res.send('Hello World');
-});
+app.get('/',wrapAsync(listingController.index));
 app.all("*",(req,res,next)=>{
     next(new ExpressError(404,'Page not found'));
     // res.send('Page not found');

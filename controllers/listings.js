@@ -2,17 +2,16 @@ const Listing = require("../models/Listing.js");
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const mapToken = process.env.MAP_TOKEN;
 const geocodingClient = mbxGeocoding({ accessToken: mapToken });
+const { cloudinary } = require('../cloudConfig.js');
 module.exports.index= async(req,res)=>{
   const allListing=await Listing.find();
   res.render("listings/index.ejs",{allListing})
 };
 module.exports.showListing=(req,res)=>{
     const {id}=req.params;
-    console.log(res.locals.currentUser);
     let curuser=res.locals.currentUser;
     
      Listing.findById(id).populate({path: "reviews",populate:{path:"author"}}).populate("owner").then((listing)=>{
-        // console.log(listing.image.url);
         if(!listing){
             req.flash('error','Listing not found');
             return res.redirect('/listings');
@@ -55,16 +54,63 @@ module.exports.updateListing= async(req,res)=>{
         let url=req.file.path;
         let filename=req.file.filename;
         listing.image={url,filename};
-        await listing.save();
+        let list=await listing.save();
+        // console.log(list);
+        
     }
     
     req.flash('success','Successfully updated listing');
     res.redirect(`/listings/${id}`);  
     // res.send('Listing updated successfully'); 
 };
-module.exports.deleteListing= async(req,res)=>{
-    const {id}=req.params;
+// module.exports.deleteListing= async(req,res)=>{
+//     const {id}=req.params;
+//     await Listing.findByIdAndDelete(id);
+//     req.flash("success","deleted successfully")
+//     res.redirect('/listings');
+// }
+module.exports.searchByLocation = async (req, res) => {
+    const { location } = req.query;
+
+    // Build a case-insensitive regex from the input
+    const regex = new RegExp(location, 'i');
+
+    // Search listings where either `location` or `country` matches
+    const listings = await Listing.find({
+        $or: [
+            { location: regex },
+            { country: regex }
+        ]
+    });
+
+    if (listings.length === 0) {
+        req.flash('error', 'No listings found for the specified location or country');
+        return res.redirect('/listings');
+    }
+
+    res.render('listings/index.ejs', { allListing: listings });
+};
+
+
+
+module.exports.deleteListing = async (req, res) => {
+    const { id } = req.params;
+
+    // Find the listing first to access the image filename (public_id)
+    const listing = await Listing.findById(id);
+    if (!listing) {
+        req.flash("error", "Listing not found");
+        return res.redirect('/listings');
+    }
+
+    // Delete image from Cloudinary
+    if (listing.image && listing.image.filename) {
+        await cloudinary.uploader.destroy(listing.image.filename);
+    }
+
+    // Then delete the listing from DB
     await Listing.findByIdAndDelete(id);
-    req.flash("success","deleted successfully")
+
+    req.flash("success", "Deleted successfully");
     res.redirect('/listings');
-}
+};

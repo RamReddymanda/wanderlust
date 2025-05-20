@@ -10,6 +10,7 @@ module.exports.listingSchema = Joi.object({
             url: Joi.string(),
             filename: Joi.string()
         }),
+        category: Joi.string().valid('hotel', 'resturant', 'tourisum', 'house'),
         // image:Joi.string(),
     }).required()
 });
