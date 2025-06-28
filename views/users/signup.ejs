@@ -2,7 +2,7 @@
 <div class="row mt-3">
     <h1 class="col-6 offset-2">SignUp on WanderLust</h1>
     <div class="col-8 offset-2">
-        <form action="/signup" method="post" class="needs-validation" novalidate>
+        <form id="signupForm" action="/signup" method="post" class="needs-validation" novalidate>
             <div class="mb-3">
             <lable for="username" class="form-label">Username</lable>
             <input type="text" id="username" name="username"  class="form-control" required>
@@ -25,7 +25,17 @@
                Looks good!
               </div>            
         </div>
-        <button class="btn btn-success">SignUp</button>
+        <button id="signupButton" class="btn btn-success">SignUp</button>
         </form>
     </div>
 </div>
+<script>
+    const form = document.getElementById('signupForm');
+    const signupButton = document.getElementById('signupButton');
+    // console.log(form);
+    form.addEventListener("submit", (event)=>{
+        // console.log(event);
+        signupButton.disabled=True;
+        signupButton.innerHTML = 'Signing Up...';
+    });
+</script>
