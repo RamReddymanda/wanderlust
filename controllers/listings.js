@@ -33,14 +33,14 @@ module.exports.createlisting= async(req,res,next)=>{
     newListing.owner=req.user._id;
     newListing.geometry= response.body.features[0].geometry;
     await newListing.save();
-    req.flash('success','Successfully created a new listing');
+    req.flash('success','Successfully created a new list');
     res.redirect('/listings');
 };
 module.exports.rendorEditListing= async(req,res)=>{
     const {id}=req.params;
     const listing=await Listing.findById(id);
      if(!listing){
-            req.flash('error','Listing not found');
+            req.flash('error','not found');
             return res.redirect('/listings');
         }
     let orginalImage=listing.image.url;

@@ -31,8 +31,8 @@
         <% if (curuser && listing.owner._id.equals(curuser._id)) { %>
             <div class="col-12 col-lg-8 d-flex flex-column flex-md-row justify-content-center align-items-center mb-4 gap-3 mx-auto">
                 <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark w-100 w-md-25">Edit</a>
-                <form action="/listings/<%= listing._id %>?_method=DELETE" method="post" class="w-100 w-md-25">
-                    <button class="btn btn-danger w-100">Delete</button>
+                <form id="" action="/listings/<%= listing._id %>?_method=DELETE" method="post" class="auto-disable-form w-100 w-md-25">
+                    <button  class="auto-disable-button btn btn-danger w-100">Delete</button>
                 </form>
             </div>
         <% } %>
@@ -42,7 +42,7 @@
             <% if (curuser) { %>
                 <h4>Leave a Review</h4>
                 <hr>
-                <form action="/listings/<%= listing.id %>/reviews" method="post" novalidate class="needs-validation">
+                <form id="" action="/listings/<%= listing.id %>/reviews" method="post" novalidate class="auto-disable-form needs-validation">
                     <div class="mb-3 mt-3">
                         <fieldset class="starability-slot">
                             <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
@@ -66,7 +66,7 @@
                         <div class="invalid-feedback">Please submit some comments for review</div>
                     </div>
 
-                    <button class="btn btn-outline-dark mt-2">Submit</button>
+                    <button class="auto-disable-button btn btn-outline-dark mt-2">Submit</button>
                 </form>
             <% } %>
         </div>
@@ -84,8 +84,8 @@
                                 <p class="starability-result card-text" data-rating="<%= review.rating %>"></p>
                                 <p class="card-text"><%= review.comment %></p>
                             </div>
-                            <form action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" class="mb-3" method="post">
-                                <button class="btn btn-sm btn-dark">Delete</button>
+                            <form action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" class="auto-disable-form mb-3" method="post">
+                                <button class="auto-disable-button btn btn-sm btn-dark">Delete</button>
                             </form>
                         </div>
                     <% } %>
@@ -100,6 +100,31 @@
         </div>
     </div>
 </div>
-
-
 <script src="/javascript/map.js"></script>
+<script>
+  // Handle all forms with class 'auto-disable-form'
+  const allForms = document.querySelectorAll('.auto-disable-form');
+
+  allForms.forEach((form) => {
+    const button = form.querySelector('.auto-disable-button');
+
+    form.addEventListener('submit', function (e) {
+      // Check form validity
+      if (!form.checkValidity()) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (button) {
+          button.disabled = false;
+        }
+      } else {
+        if (button) {
+          button.disabled = true;
+          button.innerText = 'Please wait...';
+        }
+      }
+
+      // For Bootstrap validation styling
+      form.classList.add('was-validated');
+    });
+  });
+</script>

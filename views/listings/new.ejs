@@ -3,7 +3,7 @@
     <div class="row justify-content-center">
         <div class="col-lg-8 col-md-10 col-sm-12">
             <h3 class="mb-4">Create a New Listing</h3>
-            <form method="post" action="/listings" class="needs-validation" novalidate enctype="multipart/form-data">
+            <form method="post" action="/listings" id="uploadForm" class="needs-validation" novalidate enctype="multipart/form-data">
                 
                 <div class="mb-3">
                     <label for="title" class="form-label">Title</label>
@@ -32,7 +32,8 @@
 
                 <div class="mb-3">
                     <label for="image" class="form-label">Upload Image</label>
-                    <input type="file" name="listing[image]" class="form-control">
+                    <input type="file" name="listing[image]" class="form-control" required>
+                    <div class="invalid-feedback">Please select a File.</div>
                 </div>
 
                 <div class="row">
@@ -55,8 +56,27 @@
                     <div class="invalid-feedback">Enter a location.</div>
                 </div>
 
-                <button type="submit" class="btn btn-dark w-100 mb-3">Add Listing</button>
+                <button type="submit" id="Button" class=" btn btn-dark w-100 mb-3">Add Listing</button>
             </form>
         </div>
     </div>
 </div>
+<script>
+  const form = document.getElementById('uploadForm');
+  const Button = document.getElementById('Button');
+
+  form.addEventListener("submit", function (event) {
+    // If form is invalid, prevent submission and show feedback
+    if (!form.checkValidity()) {
+      event.preventDefault();
+      event.stopPropagation();
+      Button.disabled = false;                  // Ensure button stays active
+    } else {
+      // Form is valid — disable and change button text
+      Button.disabled = true;
+      Button.innerHTML = 'Adding...';
+    }
+
+    form.classList.add('was-validated');        // Bootstrap-style validation feedback
+  });
+</script>

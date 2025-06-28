@@ -6,7 +6,7 @@
 
       <h3 class="mb-4 text-center">Edit Listing</h3>
 
-      <form method="post" novalidate class="needs-validation" enctype="multipart/form-data"
+      <form id="uploadForm" method="post" novalidate class="needs-validation" enctype="multipart/form-data"
         action="/listings/<%= listing._id %>?_method=PUT">
 
         <div class="mb-3">
@@ -68,7 +68,7 @@
           <div class="invalid-feedback">Enter location.</div>
         </div>
 
-        <div class="d-grid">
+        <div id="Button" class="d-grid">
           <button class="btn btn-dark">Update</button>
         </div>
 
@@ -78,3 +78,22 @@
 </div>
 <br>
 <br>
+<script>
+  const form = document.getElementById('uploadForm');
+  const Button = document.getElementById('Button');
+
+  form.addEventListener("submit", function (event) {
+    // If form is invalid, prevent submission and show feedback
+    if (!form.checkValidity()) {
+      event.preventDefault();
+      event.stopPropagation();
+      Button.disabled = false;                  // Ensure button stays active
+    } else {
+      // Form is valid — disable and change button text
+      Button.disabled = true;
+      Button.innerText = 'updating...';
+    }
+
+    form.classList.add('was-validated');        // Bootstrap-style validation feedback
+  });
+</script>
