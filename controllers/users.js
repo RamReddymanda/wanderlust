@@ -10,9 +10,6 @@ module.exports.signup=async (req,res)=>{
         let newUser=new User({email,username});
         let registeredUser=await User.register(newUser,password);
         console.log(registeredUser);
-        req.login(registeredUser,(err)=>{
-            if(err) return next(err);
-         });
             req.login(registeredUser,(err)=>{
                 if(err) return next(err);
                 req.flash('success','Welcome to the WonderLust!');
